@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const mongodb = require("mongodb");
+const { ObjectId } = require('mongodb');
 const ABList = require("../../model/AndarBahar/ABProvider");
 const ABtype = require("../../model/AndarBahar/ABGameList");
 const ABbids = require("../../model/AndarBahar/ABbids");
@@ -37,13 +38,12 @@ router.post("/getResult", async (req, res) => {
 	try {
 		const provider = req.body.provider;
 		const date = req.body.date;
-		const type = await ABtype.find(
+		let type = await ABtype.find(
 			{},
 			{ gamePrice: 1, _id: 1, gameName: 1 }
 		).sort({ _id: 1 });
-
-		const data1 = await ABbids.aggregate([
-			{ $match: { providerId: mongodb.ObjectId(provider), gameDate: date } },
+        const data1 = await ABbids.aggregate([
+			{ $match: { providerId: new ObjectId(provider), gameDate: date } },
 			{
 				$group: {
 					_id: "$gameTypeId",
@@ -53,9 +53,8 @@ router.post("/getResult", async (req, res) => {
 				},
 			},
 		]);
-
 		const data2 = await ABbids.aggregate([
-			{ $match: { providerId: mongodb.ObjectId(provider), gameDate: date } },
+			{ $match: { providerId: new ObjectId(provider), gameDate: date } },
 			{
 				$group: {
 					_id: "$bidDigit",

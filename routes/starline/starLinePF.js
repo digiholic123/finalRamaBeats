@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const StarList = require("../../model/starline/Starline_Provider");
 const Starbids = require("../../model/starline/StarlineBids");
-const mongodb = require("mongodb");
+// const mongodb = require("mongodb");
+const { ObjectId } = require('mongodb');
 const session = require("../helpersModule/session");
 const digits = require("../../model/digits");
 const permission = require("../helpersModule/permission");
@@ -38,7 +39,7 @@ router.post("/getResult", async (req, res) => {
 	const date = req.body.date;
 	try {
 		const data1 = await Starbids.aggregate([
-			{ $match: { providerId: mongodb.ObjectId(provider), gameDate: date } },
+			{ $match: { providerId: new ObjectId(provider), gameDate: date } },
 			{
 				$group: {
 					_id: "$gameTypeId",
@@ -53,7 +54,7 @@ router.post("/getResult", async (req, res) => {
 
 		//Data by bids and game type
 		const data2 = await Starbids.aggregate([
-			{ $match: { providerId: mongodb.ObjectId(provider), gameDate: date } },
+			{ $match: { providerId: new ObjectId(provider), gameDate: date } },
 			{
 				$group: {
 					_id: "$bidDigit",

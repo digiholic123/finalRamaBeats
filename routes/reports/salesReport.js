@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const mongodb = require("mongodb");
+// const mongodb = require("mongodb");
+const { ObjectId } = require('mongodb');
 const KGDG = require("../../model/kgdbuser");
 const user = require("../../model/API/Users");
 const provider = require("../../model/games/Games_Provider");
@@ -161,7 +163,6 @@ router.post("/userReport", session, async (req, res) => {
 
 		var startDate = moment(startDate0, "DD/MM/YYYY").unix();
 		var endDate = moment(endDate0, "DD/MM/YYYY").unix();
-
 		if (userName == "" && provider == 0) {
 			const bidsData = await bids.aggregate([
 				{
@@ -201,14 +202,12 @@ router.post("/userReport", session, async (req, res) => {
 					},
 				},
 			]);
-
 			res.json(bidsData);
 		} else if (provider != 0 && userName == "") {
-			console.log("Correct");
 			const data1 = await bids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -228,7 +227,7 @@ router.post("/userReport", session, async (req, res) => {
 			const bidsData = await bids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -247,7 +246,6 @@ router.post("/userReport", session, async (req, res) => {
 			res.json(bidsData);
 		}
 	} catch (error) {
-		console.log(error);
 		res.json({
 			status: 0,
 			message: "contact Support",
@@ -312,7 +310,7 @@ router.post("/userReportStar", session, async (req, res) => {
 			const bidsData = await starBids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -332,7 +330,7 @@ router.post("/userReportStar", session, async (req, res) => {
 			const bidsData = await starBids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -417,7 +415,7 @@ router.post("/userReportAB", session, async (req, res) => {
 			const bidsData = await abBids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -438,7 +436,7 @@ router.post("/userReportAB", session, async (req, res) => {
 			const bidsData = await abBids.aggregate([
 				{
 					$match: {
-						providerId: mongodb.ObjectId(provider),
+						providerId: new ObjectId(provider),
 						dateStamp: {
 							$gte: startDate,
 							$lte: endDate,
@@ -578,7 +576,6 @@ router.post("/analysisReport", session, async (req, res) => {
 			.then(function (table) {
 				let dataTab = table.data;
 
-				// console.log("---------------------------->",dataTab)
 				let tabelArray = [];
 				let profitLoss = 0;
 				let totalBid = 0;
@@ -649,7 +646,6 @@ router.post("/analysisReport", session, async (req, res) => {
 					i++;
 				}
 
-				console.log("------",tabelArray)
 
 				res.json({
 					data: tabelArray,
@@ -658,7 +654,6 @@ router.post("/analysisReport", session, async (req, res) => {
 				});
 			})
 			.catch(function (error) {
-				console.log(error);
 				res.json({
 					status: 0,
 					message: "Request To Large",
@@ -668,7 +663,6 @@ router.post("/analysisReport", session, async (req, res) => {
 
 
 	} catch (error) {
-		console.log(error);
 		res.json({
 			status: 0,
 			message: "contact Support",
